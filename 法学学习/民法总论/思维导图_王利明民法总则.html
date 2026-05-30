@@ -50,8 +50,8 @@
     word-break: keep-all !important; white-space: normal !important;
     padding: 2px 6px !important; line-height: 1.4 !important;
   }
-  .markmap-node[data-depth="0"] > foreignObject > div { font-size: 22px !important; font-weight: 900 !important; color: #1a1a2e !important; line-height: 1.2 !important; padding-top: 0 !important; }
-  .markmap-node[data-depth="1"] > foreignObject > div { font-size: 17px !important; font-weight: 700 !important; color: #8b0000 !important; line-height: 1.2 !important; padding-top: 0 !important; }
+  .markmap-node[data-depth="0"] > foreignObject > div { font-size: 22px !important; font-weight: 900 !important; color: #1a1a2e !important; line-height: 1.15 !important; padding-top: 0 !important; margin-top: -2px !important; }
+  .markmap-node[data-depth="1"] > foreignObject > div { font-size: 16px !important; font-weight: 700 !important; color: #8b0000 !important; line-height: 1.15 !important; padding-top: 0 !important; margin-top: -2px !important; }
   .markmap-node[data-depth="2"] > foreignObject > div { font-size: 14px !important; font-weight: 600 !important; color: #2c3e50 !important; }
   .markmap-node[data-depth="3"] > foreignObject > div { font-size: 12.5px !important; font-weight: 400 !important; color: #444 !important; }
   .markmap-node[data-depth="4"] > foreignObject > div { font-size: 11px !important; font-weight: 300 !important; color: #666 !important; }
@@ -636,7 +636,7 @@ function render() {
     autoFit: false,
     colorFreezeLevel: 3,
     duration: 300,
-    maxWidth: 420,
+    maxWidth: 460,
     initialExpandLevel: 3,
     pan: true,
     zoom: true,
