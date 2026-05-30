@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>雍琦 · 法律逻辑学 · 思维导图</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #f5f0eb; }
+  #mindmap { width: 100vw; height: 100vh; }
+  .search-bar {
+    position: fixed; top: 16px; left: 16px; z-index: 100;
+    display: flex; gap: 6px; align-items: center;
+  }
+  .search-bar input {
+    width: 240px; height: 42px; padding: 0 14px;
+    border: 1.5px solid #ddd; border-radius: 21px;
+    font-size: 0.9em; font-family: inherit;
+    outline: none; background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: all 0.2s;
+  }
+  .search-bar input:focus { border-color: #e94560; width: 300px; }
+  .search-bar input::placeholder { color: #bbb; }
+  .search-info { font-size: 0.75em; color: #999; min-width: 50px; }
+  .search-bar button {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: none; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    cursor: pointer; font-size: 1em; color: #555;
+    transition: all 0.15s;
+  }
+  .search-bar button:hover { background: #e94560; color: #fff; }
+  .match-highlight { fill: #ffe066 !important; stroke: #e94560 !important; stroke-width: 2px !important; }
+  .match-current { fill: #e94560 !important; stroke: #c0392b !important; stroke-width: 3px !important; color: #fff !important; }
+  .toolbar {
+    position: fixed; top: 16px; right: 16px; z-index: 100;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .toolbar button, .toolbar a {
+    width: 44px; height: 44px; border-radius: 50%;
+    border: none; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    cursor: pointer; font-size: 1.2em; display: flex; align-items: center;
+    justify-content: center; text-decoration: none; color: #333;
+    transition: all 0.2s;
+  }
+  .toolbar button:hover, .toolbar a:hover {
+    background: #e94560; color: #fff; transform: scale(1.1);
+  }
+  .markmap-node foreignObject > div {
+    word-break: keep-all !important; white-space: normal !important;
+    padding: 2px 6px !important; line-height: 1.4 !important;
+  }
+  .markmap-node[data-depth="0"] > foreignObject > div { font-size: 22px !important; font-weight: 900 !important; color: #1a1a2e !important; line-height: 1.15 !important; padding-top: 0 !important; margin-top: -2px !important; }
+  .markmap-node[data-depth="1"] > foreignObject { overflow: visible !important; }
+  .markmap-node[data-depth="1"] > foreignObject > div { font-size: 16px !important; font-weight: 700 !important; color: #c0392b !important; white-space: nowrap !important; line-height: 1.15 !important; padding-top: 0 !important; }
+  .markmap-node[data-depth="2"] > foreignObject > div { font-size: 14px !important; font-weight: 600 !important; color: #2c3e50 !important; }
+  .markmap-node[data-depth="3"] > foreignObject > div { font-size: 12.5px !important; font-weight: 400 !important; color: #444 !important; }
+  .markmap-node[data-depth="4"] > foreignObject > div { font-size: 11px !important; font-weight: 300 !important; color: #666 !important; }
+  .markmap-node[data-depth="5"] > foreignObject > div,
+  .markmap-node[data-depth="6"] > foreignObject > div { font-size: 10px !important; font-weight: 300 !important; color: #888 !important; }
+</style>
+</head>
+<body>
+
+<svg id="mindmap"></svg>
+
+<div class="search-bar">
+  <input id="searchInput" type="text" placeholder="搜索知识点...（回车跳转）" oninput="doSearch()" onkeydown="handleSearchKey(event)">
+  <button onclick="prevMatch()" title="上一个">▲</button>
+  <button onclick="nextMatch()" title="下一个">▼</button>
+  <span class="search-info" id="searchInfo"></span>
+</div>
+
+<div class="toolbar">
+  <button onclick="fit()" title="适应屏幕">🔍</button>
+  <button onclick="expandAll()" title="全部展开">📂</button>
+  <button onclick="collapseAll()" title="全部折叠">📁</button>
+  <a href="./" title="返回逻辑学导航">🏠</a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://cdn.jsdelivr.net/npm/markmap-view@0.15.4/dist/browser/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/markmap-lib@0.15.4/dist/browser/index.js"></script>
+
+<script>
+const markdown = `# 🧠 雍琦·法律逻辑学（增订版）
+
+## 第一章 引论
+### 第一节 逻辑科学的产生与发展
+#### "逻辑"一词的多重含义
+##### 客观事物的规律性
+##### 思维规律
+##### 关于思维规律的科学
+#### 逻辑科学的产生
+##### 古希腊：亚里士多德创立形式逻辑（《工具论》）
+##### 古中国：墨家逻辑（《墨经》）、名家辩学
+##### 古印度：因明学
+#### 逻辑科学的发展走向
+##### 传统逻辑 → 数理逻辑（符号逻辑）
+##### 数理逻辑：命题演算 + 谓词演算
+##### 现代逻辑分支：模态逻辑、时态逻辑、道义逻辑等
+##### 非形式逻辑与批判性思维的兴起
+### 第二节 逻辑学的性质与功能
+#### 什么是逻辑学
+##### 研究思维形式及其规律的科学
+##### 工具性学科（元科学性质）
+#### 思维同语言的关系
+##### 思维是语言的内容，语言是思维的形式
+##### 同一思维可用不同语言表达
+##### 法律工作中精确运用语言的重要性
+#### 逻辑学的功能
+##### 认识功能（获得新知识的工具）
+##### 论证功能（表达思想、证明主张）
+##### 分析功能（识别谬误、评判论证）
+### 第三节 司法工作者掌握逻辑知识的必要性
+#### 法律推理的逻辑性要求
+##### 法律适用 = 逻辑三段论：大前提（法律规范）+ 小前提（案件事实）→ 结论
+#### 事实认定的逻辑基础
+##### 证据的关联性判断
+##### 证据链的构建逻辑
+#### 法律文书的说理性
+##### 判决书、起诉书的论证结构
+##### 逻辑严密性是司法公正的基础
+
+## 第二章 概念的一般逻辑知识及其应用
+### 第一节 概念的特征
+#### 概念及其表达式
+##### 概念：反映对象特有属性的思维形式
+##### 表达式：语词或词组（概念的语言外壳）
+#### 概念同语词的关系
+##### 概念 ≠ 语词（不同语言可有不同语词表达同一概念）
+##### 一词多义（同一语词可表达不同概念）
+##### 多词同义（不同语词可表达同一概念）
+#### 法律概念是客观性与规定性的统一
+##### 概念反映客观对象的属性
+##### 法律概念具有人为规定的规范性
+##### 法律概念需要解释和界定
+### 第二节 概念的内涵与外延
+#### 内涵：概念所反映的对象的特有属性
+##### 认识性内涵（描述对象的客观属性）
+##### 规定性内涵（通过规范设定对象的属性）
+#### 外延：具有概念内涵属性的所有对象
+##### 外延边缘的模糊性（概念边界的模糊地带）
+##### 法律概念的不确定性（需要司法裁量）
+### 第三节 准确运用概念的逻辑基础
+#### 概念的分类知识
+##### 单独概念 vs 普遍概念
+##### 集合概念 vs 非集合概念
+##### 实体概念 vs 属性概念
+##### 正概念 vs 负概念
+#### 概念间的关系 ⭐
+##### 全同关系（外延完全相同）
+##### 属种关系（包含关系：上位概念 vs 下位概念）
+##### 交叉关系（外延部分重合）
+##### 全异关系
+###### 矛盾关系（A + 非A = 全集）
+###### 反对关系（A + B ≠ 全集）
+#### 层序关系与司法归类
+##### 法律概念的层级结构
+##### 罪名归类中的属种关系
+### 第四节 明确概念的逻辑方法
+#### 定义
+##### 属加种差定义法（被定义项 = 属 + 种差）
+##### 定义规则
+###### 定义必须相应相称（不过宽、不过窄）
+###### 定义不得循环
+###### 定义应清楚确切（不得用比喻）
+##### 法律定义的特点与要求
+#### 列举与划分
+##### 划分：按一定标准将母项分为若干子项
+##### 划分规则
+###### 划分必须穷尽（子项外延之和 = 母项外延）
+###### 划分须按同一标准
+###### 子项必须互不相容
+##### 列举：不完全揭示外延的方法
+##### 法律条文中的列举与兜底条款
+
+## 第三章 命题的一般特征
+### 第一节 判断及其表达式
+#### 判断：对客观事物情况有所断定的思维形式
+#### 命题：表达判断的语句
+##### 判断 ≠ 命题（思维内容 vs 语言形式）
+##### 同一个判断可用不同命题表达
+#### 命题与语句的关系
+##### 并非所有语句都表达命题（如疑问句、祈使句）
+##### 命题必须是陈述句
+### 第二节 描述命题与评价命题
+#### 描述命题（事实命题）⭐
+##### 对客观事实情况的陈述
+##### 有真值（可真可假）
+##### 如："某甲于某日实施了盗窃行为"
+#### 评价命题（价值命题）
+##### 包含价值判断的命题
+##### 不直接陈述事实，而表达评价
+##### 如："某甲的行为构成盗窃罪"
+#### 法律适用中的描述与评价
+##### 事实认定 → 描述命题
+##### 法律定性 → 评价命题
+##### 判决结论 → 评价命题
+### 第三节 命题形式及其分类
+#### 简单命题
+##### 性质命题（直言命题）
+##### 关系命题
+#### 复合命题
+##### 联言命题（且）
+##### 选言命题（或）
+##### 假言命题（如果……则……）
+##### 负命题（并非……）
+#### 模态命题
+##### 真值模态命题（必然/可能）
+##### 规范命题（应当/允许/禁止）
+
+## 第四章 性质命题
+### 第一节 性质命题概述
+#### 性质命题的定义
+##### 断定对象具有或不具有某种性质的命题
+##### 又称直言命题
+#### 性质命题与关系命题的区别
+##### 性质命题：断定一个对象自身的属性
+##### 关系命题：断定两个或多个对象之间的关系
+#### 性质命题的基本类型 ⭐
+##### 全称肯定命题（A）：所有S是P
+##### 全称否定命题（E）：所有S不是P
+##### 特称肯定命题（I）：有些S是P
+##### 特称否定命题（O）：有些S不是P
+##### 单称命题可归入全称命题处理
+### 第二节 性质命题的逻辑特征
+#### 词项的周延性 ⭐
+##### 周延：命题形式本身断定了该词项的全部外延
+##### 全称判断主项周延，特称判断主项不周延
+##### 肯定判断谓项不周延，否定判断谓项周延
+#### 性质命题的真假判定
+##### 命题的真假取决于是否与客观事实相符
+##### A、E、I、O四种命题形式本身不决定真值
+#### 逻辑方阵（对当关系）⭐⭐
+##### 矛盾关系（A↔O，E↔I）：不可同真、不可同假
+##### 反对关系（A↔E）：不可同真、可同假
+##### 下反对关系（I↔O）：可同真、不可同假
+##### 差等关系（A→I，E→O）：全称真则特称真
+### 第三节 性质命题的隐含命题以及揭示方法
+#### 换位法
+##### 互换主项与谓项，产生新命题
+##### 规则：原命题中不周延的词项在结论中不得周延
+##### 限缩换位 vs 简单换位
+#### 换质法
+##### 改变命题的质（肯定↔否定），同时将谓项改为矛盾概念
+#### 换质位法（换质 + 换位交替进行）
+
+## 第五章 复合命题 ⭐
+### 第一节 复合命题概述
+#### 复合命题的特征
+##### 由简单命题通过逻辑联结词组合而成
+##### 真假取决于支命题的真假和联结词的性质
+#### 复合命题的组成
+##### 支命题（作为组成部分的简单命题）
+##### 逻辑联结词（连接支命题的逻辑词）
+#### 真值表方法
+##### 真值表是判定复合命题逻辑性质的图形工具
+##### 穷尽支命题的所有真假组合
+### 第二节 复合命题的基本形式及其逻辑性质
+#### 联言命题（p∧q）⭐
+##### 断定若干情况同时存在
+##### "既p又q"
+##### 真值特征：当且仅当所有支命题为真时，联言命题为真
+#### 选言命题
+##### 相容选言命题（p∨q）⭐
+###### 断定至少有一个选言支为真
+###### "p或q"——p、q可同为真
+###### 一真则真，全假则假
+##### 不相容选言命题（p⊻q）
+###### 断定恰好有一个选言支为真
+###### "要么p，要么q"——p、q不可同为真
+###### 一真一假才为真
+#### 假言命题（条件命题）⭐⭐
+##### 充分条件假言命题（p→q）
+###### "如果p，那么q"
+###### p是q的充分条件：有p必有q
+###### 只有前件真后件假时命题为假
+##### 必要条件假言命题（p←q）
+###### "只有p，才q"
+###### p是q的必要条件：无p必无q
+###### 只有前件假后件真时命题为假
+##### 充分必要条件假言命题（p↔q）
+###### "当且仅当p，则q"
+###### p是q的充要条件
+### 第三节 复合命题的等值式及其应用意义
+#### 负命题（¬p）
+##### 否定某个命题的命题
+##### "并非p"
+##### 真值特征：p真则¬p假，p假则¬p真
+#### 命题形式的转换与等值
+##### 双重否定律：¬¬p ↔ p
+##### 德摩根律：¬(p∧q) ↔ ¬p∨¬q / ¬(p∨q) ↔ ¬p∧¬q
+##### 蕴含转换：p→q ↔ ¬p∨q
+##### 假言命题的否定：¬(p→q) ↔ p∧¬q
+#### 真值表判定方法
+##### 列出所有可能的真值组合
+##### 比较命题形式的真值是否一致
+
+## 第六章 规范命题
+### 第一节 模态命题与真值模态命题
+#### 模态命题概述
+##### 包含模态词的命题
+##### "必然"、"可能"等
+#### 真值模态命题
+##### 必然命题（□p：必然p）
+##### 可能命题（◇p：可能p）
+##### 必然 ↔ 不可能不；可能 ↔ 不必然不
+### 第二节 规范命题概述
+#### 行为规范与法律规范
+##### 规范：指导、约束人们行为的准则
+##### 法律规范：由国家强制力保障实施的行为规范
+#### 法律规范的结构
+##### 假定（适用条件）
+##### 处理（行为模式：应当/可以/不得）
+##### 制裁（法律后果）
+#### 规范命题的分类 ⭐
+##### 义务性规范命题（应当p = O p）
+##### 禁止性规范命题（禁止p = F p = O ¬p）
+##### 授权性规范命题（允许p = P p）
+### 第三节 规范命题相互间的逻辑关系
+#### 逻辑方阵（规范对当关系）⭐
+##### 应当p（O） ↔ 禁止非p（F¬）
+##### 允许p（P） ↔ 不禁止p（¬F）
+##### 反对关系：应当p ↔ 应当非p
+##### 矛盾关系：应当p ↔ 允许非p
+##### 下反对关系：允许p ↔ 允许非p
+##### 差等关系：应当p → 允许p
+### 第四节 刑法规范命题的一般特征和结构特点
+#### 刑法规范的命题形式
+##### 禁止性规范为主（刑法是禁止性法律）
+##### "不得实施……行为" = 禁止p
+#### 罪状描述中的逻辑结构
+##### 简单罪状：单一命题
+##### 叙明罪状：联言命题
+##### 空白罪状：隐含条件命题
+##### 引证罪状：引用其他法条 = 逻辑联结
+#### 但书条款的逻辑意义
+##### "但是" = 例外条件
+##### 逻辑形式：一般规则 ∧ 例外条件 → 不适用
+
+## 第七章 推理的概述
+### 第一节 推理的特征
+#### 推理的定义
+##### 由一个或几个已知命题推出新命题的思维形式
+#### 推理的构成要素
+##### 前提（已知命题）
+##### 结论（推出的新命题）
+##### 推理依据（逻辑规则）
+### 第二节 推理的类型及其区别与联系
+#### 演绎推理（从一般到特殊）
+##### 前提蕴含着结论（必然性推理）
+#### 归纳推理（从特殊到一般）
+##### 前提不蕴含结论（或然性推理）
+#### 类比推理（从特殊到特殊）
+##### 基于相似性的推理（或然性推理）
+### 第三节 推理的有效性与合理性
+#### 演绎推理的有效性
+##### 有效性 = 前提为真时结论必然为真
+##### 有效 ≠ 正确（推理形式有效 vs 前提内容为真）
+#### 归纳推理的合理性
+##### 合理性 ≠ 有效性（归纳推理不具有必然性）
+##### 增强归纳强度的因素（样本数量、代表性等）
+### 第四节 证据的运用与逻辑推理
+#### 证据推理的基本模式
+##### 从证据事实推出案件事实
+##### 每个证据都是推理的前提
+#### 证据链条的逻辑要求
+##### 各项证据之间不得矛盾
+##### 证据组合必须排除合理怀疑
+##### 推理上具有唯一性（排除其他可能）
+
+## 第八章 演绎推理 ⭐
+### 第一节 三段论
+#### 三段论的特征
+##### 由两个包含共同词项的性质命题推出新性质命题
+##### 大前提 + 小前提 → 结论
+#### 三段论的组成
+##### 三个词项：大项（P）、中项（M）、小项（S）
+##### 中项：在大前提和小前提中出现的共同词项
+##### 中项是连接大小前提的关键 ⭐
+#### 三段论的规则 ⭐⭐
+##### 中项必须至少在一个前提中周延
+##### 前提中不周延的词项在结论中不得周延
+##### 两个否定前提不能得出结论
+##### 前提有一否定，结论必否定
+##### 两个特称前提不能得出结论
+##### 前提有一特称，结论必特称
+#### 三段论的格和式
+##### 格：由中项在前提中的位置决定（四种格）
+##### 式：由A、E、I、O三种命题的组合决定
+##### 法律适用中的第一格最常用
+#### 三段论的省略式
+##### 省略大前提（法律依据默认已知）
+##### 省略小前提（案件事实不言自明）
+##### 省略结论（不言而喻）
+##### 揭示省略部分的方法
+### 第二节 复合命题推理
+#### 联言推理
+##### 分解式：(p∧q) → p
+##### 组合式：p，q → (p∧q)
+#### 选言推理 ⭐
+##### 相容选言推理
+###### 否定肯定式：(p∨q) ∧ ¬p → q
+###### 注意：不能使用肯定否定式！
+##### 不相容选言推理
+###### 否定肯定式（有效）
+###### 肯定否定式（有效）
+#### 假言推理 ⭐⭐
+##### 充分条件假言推理
+###### 肯定前件式（有效）：(p→q) ∧ p → q
+###### 否定后件式（有效）：(p→q) ∧ ¬q → ¬p
+###### 否定前件式（无效）
+###### 肯定后件式（无效）
+##### 必要条件假言推理
+###### 否定前件式（有效）：(p←q) ∧ ¬p → ¬q
+###### 肯定后件式（有效）：(p←q) ∧ q → p
+###### 肯定前件式（无效）
+###### 否定后件式（无效）
+#### 复合命题推理的综合运用
+##### 二维推理（假言选言推理）
+##### 复杂案件的推理链条构建
+### 第三节 刑事侦查工作中正确运用演绎推理的方法
+#### 从现场痕迹到嫌疑人特征的推理
+#### 从证人证言到案件事实的推理
+#### 排除法在侦查中的应用
+### 第四节 法律推理的特征及运用
+#### 法律推理的基本模型
+##### 制定法三段论：法律规范 + 案件事实 → 判决结论
+##### 类比法律推理：类似案件类似处理
+#### 法律推理中的常见谬误
+##### 循环论证
+##### 偷换概念
+##### 以偏概全
+
+## 第九章 归纳推理
+### 第一节 归纳推理概述
+#### 归纳推理的特征
+##### 从个别（特殊）性前提推出一般性结论
+##### 结论的知识超出前提的范围
+##### 结论具有或然性（不具必然性）
+#### 归纳推理与演绎推理的区别
+##### 思维方向不同（特殊→一般 vs 一般→特殊）
+##### 结论的性质不同（或然 vs 必然）
+##### 前提与结论的逻辑关系不同
+### 第二节 完全归纳推理
+#### 考察了一类事物的全部对象
+#### 前提穷尽所有对象，结论具有必然性
+#### 在司法中的有限应用
+### 第三节 不完全归纳推理
+#### 简单枚举法
+##### 根据某类事物的部分对象具有某属性
+##### 且未遇反例
+##### 从而推出该类全部对象都具有该属性
+##### 结论具有或然性
+#### 科学归纳推理
+##### 不仅列举事实，还分析与属性之间的必然联系
+##### 结论相对可靠
+##### 司法统计与经验法则
+### 第四节 探求因果联系的逻辑方法（穆勒五法）⭐⭐
+#### 契合法（求同法）
+##### 不同场合中出现同一现象时只有一个共同情况
+##### 该情况可能是该现象的原因
+#### 差异法（求异法）
+##### 两种场合其他情况相同，只有一个情况不同
+##### 该不同情况可能是原因
+#### 契合差异并用法
+##### 正事例组契合法 + 负事例组契合法 → 对比得出原因
+#### 共变法
+##### 某一情况的变化总伴随另一现象的变化
+##### 该情况可能是原因
+#### 剩余法
+##### 已知某一复合现象的部分原因
+##### 剩余部分的原因来自剩余的其他情况
+#### 穆勒五法在侦查中的应用
+##### 现场勘查中的因果分析
+##### 排除嫌疑的逻辑推理
+
+## 第十章 类比推理
+### 第一节 类比推理的特征及性质
+#### 类比推理的定义
+##### 根据两个（类）对象在某些属性上相同或相似
+##### 推出它们在另一些属性上也相同或相似的推理
+#### 类比推理的公式
+##### A具有属性a、b、c、d
+##### B具有属性a、b、c
+##### 所以B可能具有属性d
+#### 类比推理的性质
+##### 从特殊到特殊（或从一般到一般）
+##### 结论具有或然性
+##### 可靠性取决于共有属性的相关性和数量
+### 第二节 类比推理在司法工作中的应用
+#### 类比并案
+##### 多个案件作案手法相似 → 可能为同一人作案
+##### 并案侦查的逻辑基础
+#### 侦查实验类比
+##### 模拟案发条件进行实验
+##### 推断实际案件中的可能情形
+#### 类比法律推理
+##### 普通法系的先例推理
+##### 中国：指导性案例的参照适用
+##### 类似案件类似处理
+### 第三节 刑事侦查中的比对推理
+#### 比对推理的特点
+##### 根据对象特征的相同点进行同一认定
+##### 如笔迹鉴定、指纹比对、DNA比对
+#### 比对推理的逻辑要求
+##### 特征必须具有特异性（个体识别能力）
+##### 特征必须具有稳定性
+##### 比对结论的确定程度取决于特征质量和数量
+
+## 第十一章 假说与侦查假说
+### 第一节 假说及其建立程序
+#### 假说的定义
+##### 根据已有的事实和科学原理
+##### 对未知现象或规律所作的推测性解释
+#### 假说的特征
+##### 科学性（有事实和理论依据）
+##### 推测性（尚未被证实）
+##### 可检验性（可通过实践验证）
+#### 假说的建立程序
+##### 提出初步假定（发现问题）
+##### 进行逻辑推演（如果假说成立，则可推出……）
+##### 验证推论（用事实检验推论是否正确）
+##### 作出结论（证实、证伪或修正假说）
+### 第二节 侦查假说及其应用 ⭐
+#### 侦查假说的概念
+##### 侦查人员根据案件已有材料和经验
+##### 对案件情况作出的推测性说明
+#### 侦查假说的类型
+##### 关于案件性质的假说
+##### 关于作案人的假说
+##### 关于作案时间和地点的假说
+##### 关于作案手段和过程的假说
+##### 关于犯罪动机的假说
+#### 侦查假说的逻辑要求
+##### 假说必须与已有案件事实一致
+##### 假说应尽可能穷尽所有可能
+##### 各假说之间应互相排斥（便于逐一排除）
+##### 优先检验可能性最大的假说
+#### 侦查假说的验证与排除
+##### 逐一验证每种假说导出的推论
+##### 排除被证伪的假说
+##### 最终确定最合理的假说
+
+## 第十二章 论证 ⭐
+### 第一节 论证的特征
+#### 论证的定义
+##### 根据一个或一些已知为真的命题
+##### 确定另一命题为真的思维过程
+#### 论证的构成要素 ⭐
+##### 论题（需要被确定为真的命题）
+##### 论据（用来确定论题为真的命题）
+##### 论证方式（论据与论题之间的逻辑联系）
+#### 论证与推理的关系
+##### 论证 = 逻辑推理的应用
+##### 推理是论证的工具，论证是推理的目的
+### 第二节 论证的方法
+#### 直接论证
+##### 从论据直接推出论题为真
+##### 不借助中间命题
+#### 间接论证
+##### 反证法 ⭐
+###### 假设论题为假
+###### 推出荒谬结果
+###### 故论题为真（归谬法）
+##### 排除法（选言论证法）
+###### 列举所有可能情况
+###### 逐一排除
+###### 剩下唯一可能 → 论题为真
+### 第三节 反驳及其方法
+#### 反驳的定义
+##### 根据已知为真的命题，确定某一命题为假或论证不成立
+#### 反驳的途径
+##### 反驳论题（直接证明对方论题为假）
+##### 反驳论据（证明对方论据为假）
+##### 反驳论证方式（指出对方推理形式无效）
+#### 反驳的方法
+##### 直接反驳（以事实或理论直接否定对方论题）
+##### 间接反驳
+###### 独立证明反论题（证明与对方论题相反的命题为真）
+###### 归谬法（假定对方论题为真，推出荒谬结论）
+### 第四节 论证中必须遵循的逻辑思维规律 ⭐⭐
+#### 同一律
+##### A是A（在同一思维过程中同一概念、同一命题保持同一含义）
+##### 违反 → 偷换概念、偷换论题
+##### 法律应用：同一罪名、同一法律概念的确定含义
+#### 矛盾律（不矛盾律）
+##### A不是非A（两个互相矛盾的命题不能同真）
+##### 违反 → 自相矛盾
+##### 法律应用：判决书中的事实认定不能前后矛盾
+#### 排中律
+##### 要么A要么非A（两个矛盾命题不能同假，必有一真）
+##### 违反 → 模棱两可
+##### 法律应用：对案件事实必须作出明确认定
+#### 充足理由律
+##### 任何真实命题都必须有充足理由
+##### 违反 → 主观臆断、证据不足
+##### 法律应用：判决结论必须建立在充分的证据和理由之上
+### 第五节 法庭论辩中常见的非形式谬误
+#### 诉诸情感谬误
+##### 不以理服人，而是以情感打动或煽动
+#### 诉诸权威谬误
+##### 仅以某权威人士的看法作为论据
+##### 忽略论据本身的合理性
+#### 人身攻击谬误
+##### 不针对论证本身，而是攻击对方人身
+#### 稻草人谬误
+##### 歪曲对方论点再加以攻击
+#### 滑坡谬误
+##### 错误推断一连串的极端后果
+#### 循环论证
+##### 用结论本身来说明结论
+#### 以偏概全（轻率概括）
+##### 以不充分的或片面的证据支持一般性结论
+#### 法律适用中的特殊谬误
+##### 类比不当（错误适用指导性案例）
+##### 颠倒举证责任
+`;
+
+const { Markmap } = window.markmap;
+const { Transformer } = window.markmap;
+
+const transformer = new Transformer();
+const { root } = transformer.transform(markdown);
+
+let mm;
+let matches = [];
+let matchIdx = -1;
+
+function render() {
+  mm = Markmap.create('#mindmap', {
+    autoFit: false,
+    colorFreezeLevel: 3,
+    duration: 300,
+    maxWidth: 460,
+    initialExpandLevel: 3,
+    pan: true,
+    zoom: true,
+    fitRatio: 0.95,
+    spacingHorizontal: 90,
+    spacingVertical: 10,
+  }, root);
+  setTimeout(() => mm.fit(), 300);
+}
+
+render();
+
+function fit() { mm.fit(); }
+
+function expandAll() {
+  const expanded = JSON.parse(JSON.stringify(root));
+  function expand(node) {
+    if (node.payload) delete node.payload.fold;
+    if (node.children) node.children.forEach(expand);
+  }
+  expand(expanded);
+  mm.setData(expanded);
+}
+
+function collapseAll() {
+  const collapsed = JSON.parse(JSON.stringify(root));
+  function collapse(node) {
+    if (node.depth >= 2) {
+      node.payload = node.payload || {};
+      node.payload.fold = 1;
+    }
+    if (node.children) node.children.forEach(collapse);
+  }
+  collapse(collapsed);
+  mm.setData(collapsed);
+}
+
+function getAllTextNodes() {
+  const svg = document.querySelector('#mindmap svg');
+  if (!svg) return [];
+  return Array.from(svg.querySelectorAll('.markmap-node'));
+}
+
+function getNodeText(node) {
+  return (node.textContent || '').replace(/\s+/g, ' ').trim().toLowerCase();
+}
+
+function clearHighlights() {
+  matches.forEach(n => { n.classList.remove('match-highlight', 'match-current'); });
+  matches = []; matchIdx = -1;
+  document.getElementById('searchInfo').textContent = '';
+}
+
+function doSearch() {
+  clearHighlights();
+  const query = document.getElementById('searchInput').value.trim().toLowerCase();
+  if (!query || query.length < 1) return;
+  const nodes = getAllTextNodes();
+  matches = nodes.filter(n => getNodeText(n).includes(query));
+  if (matches.length === 0) { document.getElementById('searchInfo').textContent = '0/0'; return; }
+  matches.forEach(n => n.classList.add('match-highlight'));
+  matchIdx = 0;
+  gotoMatch(0);
+}
+
+function gotoMatch(idx) {
+  if (matches.length === 0) return;
+  matchIdx = ((idx % matches.length) + matches.length) % matches.length;
+  document.getElementById('searchInfo').textContent = `${matchIdx + 1}/${matches.length}`;
+  matches.forEach(n => n.classList.remove('match-current'));
+  const node = matches[matchIdx];
+  node.classList.add('match-current');
+  node.classList.remove('match-highlight');
+  node.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+}
+
+function nextMatch() {
+  if (matches.length === 0) { doSearch(); return; }
+  matches[matchIdx]?.classList.add('match-highlight');
+  gotoMatch(matchIdx + 1);
+}
+
+function prevMatch() {
+  if (matches.length === 0) { doSearch(); return; }
+  matches[matchIdx]?.classList.add('match-highlight');
+  gotoMatch(matchIdx - 1);
+}
+
+function handleSearchKey(e) {
+  if (e.key === 'Enter') { e.preventDefault(); if (matches.length === 0) doSearch(); else nextMatch(); }
+  if (e.key === 'Escape') { document.getElementById('searchInput').value = ''; clearHighlights(); }
+}
+
+document.addEventListener('keydown', e => {
+  if (document.activeElement === document.getElementById('searchInput')) return;
+  if (e.key === 'f' || e.key === 'F') { e.preventDefault(); fit(); }
+  if (e.key === 'e' || e.key === 'E') { e.preventDefault(); expandAll(); }
+  if (e.key === 'c' || e.key === 'C') { e.preventDefault(); collapseAll(); }
+  if (e.key === '/' && !e.ctrlKey && !e.metaKey) { e.preventDefault(); document.getElementById('searchInput').focus(); }
+});
+</script>
+</body>
+</html>
