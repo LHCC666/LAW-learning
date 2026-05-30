@@ -49,8 +49,8 @@ def load_config() -> dict:
         "max_items": int(os.environ.get("MAX_ITEMS", "7")),
         "to_email": os.environ.get("TO_EMAIL", ""),
         "smtp": {
-            "server": os.environ.get("SMTP_SERVER", "smtp.qq.com"),
-            "port": int(os.environ.get("SMTP_PORT", "465")),
+            "server": os.environ.get("SMTP_SERVER", "smtp-mail.outlook.com"),
+            "port": int(os.environ.get("SMTP_PORT", "587")),
             "sender_email": os.environ.get("SENDER_EMAIL", ""),
             "auth_code": os.environ.get("AUTH_CODE", ""),
         },
