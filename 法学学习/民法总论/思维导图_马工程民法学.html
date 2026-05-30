@@ -631,52 +631,57 @@ function render() {
     spacingHorizontal: 100,
     spacingVertical: 10,
   }, root);
-  setTimeout(() => { mm.fit(); fixNodeSizes(); }, 400);
+  setTimeout(() => mm.fit(), 300);
 }
 
 render();
 
-// ====== 修复节点宽度：markmap 计算中文不准，JS 兜底 ======
-function fixNodeSizes() {
+// ====== 修复节点宽度：MutationObserver 实时监听 ======
+const nodeWidths2 = [600, 540, 480, 420, 360, 300, 260];
+function fixOneNode2(node) {
+  const fo = node.querySelector('foreignObject');
+  if (!fo) return;
+  const depth = parseInt(node.getAttribute('data-depth') || '0');
+  const w = nodeWidths2[Math.min(depth, nodeWidths2.length - 1)];
+  fo.setAttribute('width', w);
+  const div = fo.querySelector('div');
+  if (div) div.style.width = (w - 16) + 'px';
+}
+
+function fixAllNodes2() {
   const svg = document.querySelector('#mindmap svg');
   if (!svg) return;
-  svg.querySelectorAll('.markmap-node').forEach(node => {
-    const fo = node.querySelector(':scope > foreignObject');
-    if (!fo) return;
-    const depth = parseInt(node.getAttribute('data-depth') || '0');
-    const widths = [600, 520, 460, 400, 350, 300, 260];
-    const w = widths[Math.min(depth, widths.length - 1)];
-    fo.setAttribute('width', w);
-    const div = fo.querySelector(':scope > div');
-    if (div) { div.style.maxWidth = (w - 20) + 'px'; }
-  });
+  svg.querySelectorAll('.markmap-node').forEach(fixOneNode2);
 }
+
+const mindmapEl2 = document.getElementById('mindmap');
+const observer2 = new MutationObserver(mutations => {
+  let hasNew = false;
+  for (const m of mutations) {
+    for (const n of m.addedNodes) {
+      if (n.nodeType === 1 && (n.classList?.contains('markmap-node') || n.querySelector?.('.markmap-node'))) {
+        hasNew = true; break;
+      }
+    }
+  }
+  if (hasNew) requestAnimationFrame(() => requestAnimationFrame(fixAllNodes2));
+});
+observer2.observe(mindmapEl2, { childList: true, subtree: true });
 
 function fit() { mm.fit(); }
 
 function expandAll() {
   const expanded = JSON.parse(JSON.stringify(root));
-  function expand(node) {
-    if (node.payload) delete node.payload.fold;
-    if (node.children) node.children.forEach(expand);
-  }
+  function expand(node) { if (node.payload) delete node.payload.fold; if (node.children) node.children.forEach(expand); }
   expand(expanded);
   mm.setData(expanded);
-  setTimeout(fixNodeSizes, 400);
 }
 
 function collapseAll() {
   const collapsed = JSON.parse(JSON.stringify(root));
-  function collapse(node) {
-    if (node.depth >= 2) {
-      node.payload = node.payload || {};
-      node.payload.fold = 1;
-    }
-    if (node.children) node.children.forEach(collapse);
-  }
+  function collapse(node) { if (node.depth >= 2) { node.payload = node.payload || {}; node.payload.fold = 1; } if (node.children) node.children.forEach(collapse); }
   collapse(collapsed);
   mm.setData(collapsed);
-  setTimeout(fixNodeSizes, 400);
 }
 
 function getAllTextNodes() {
