@@ -52,9 +52,7 @@
     overflow-wrap: break-word !important;
     padding: 4px 10px !important;
     line-height: 1.5 !important;
-    overflow: visible !important;
   }
-  .markmap-node foreignObject { overflow: visible !important; }
   .markmap-node[data-depth="0"] > foreignObject > div { font-size: 22px !important; font-weight: 900 !important; color: #1a1a2e !important; }
   .markmap-node[data-depth="1"] > foreignObject > div { font-size: 17px !important; font-weight: 700 !important; color: #c0392b !important; }
   .markmap-node[data-depth="2"] > foreignObject > div { font-size: 14px !important; font-weight: 600 !important; color: #2c3e50 !important; }
@@ -625,12 +623,12 @@ function render() {
     autoFit: false,
     colorFreezeLevel: 3,
     duration: 300,
-    maxWidth: 400,
+    maxWidth: 450,
     initialExpandLevel: 3,
     pan: true,
     zoom: true,
     fitRatio: 0.95,
-    spacingHorizontal: 80,
+    spacingHorizontal: 100,
     spacingVertical: 10,
   }, root);
   setTimeout(() => mm.fit(), 300);
