@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "skills": {
+    "flashcards": {
+      "source": "anthropics/claude-for-legal",
+      "sourceType": "github",
+      "skillPath": "law-student/skills/flashcards/SKILL.md",
+      "computedHash": "b059f54b487eedfff6afadad7107dc840f1ac04051788815d81a14eb09c2083f"
+    },
+    "irac-practice": {
+      "source": "anthropics/claude-for-legal",
+      "sourceType": "github",
+      "skillPath": "law-student/skills/irac-practice/SKILL.md",
+      "computedHash": "fdd01aac9adad1dae108a81cc8f10e4e548fe7c8121bc634ed8d6eedfcdeb372"
+    },
+    "socratic-drill": {
+      "source": "anthropics/claude-for-legal",
+      "sourceType": "github",
+      "skillPath": "law-student/skills/socratic-drill/SKILL.md",
+      "computedHash": "04afb30786c42afe824dab778debf69d38db5c8b7eb3668e43013a141a04395a"
+    },
+    "study-plan": {
+      "source": "anthropics/claude-for-legal",
+      "sourceType": "github",
+      "skillPath": "law-student/skills/study-plan/SKILL.md",
+      "computedHash": "077fbf7f3cc8da91654d717e6d0bd0d9700019c935008bfdd24e6881c0a4397e"
+    }
+  }
+}

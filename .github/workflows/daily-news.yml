@@ -1,0 +1,43 @@
+name: 每日新闻简报
+
+on:
+  schedule:
+    # 北京时间每天早上 8:07（UTC 00:07）
+    - cron: '7 0 * * *'
+  # 允许手动触发（测试用）
+  workflow_dispatch:
+
+jobs:
+  send-news:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 安装依赖
+        run: |
+          pip install -r 法学学习/daily-news/requirements.txt
+
+      - name: 生成配置文件
+        env:
+          TO_EMAIL: ${{ secrets.TO_EMAIL }}
+          SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
+          AUTH_CODE: ${{ secrets.AUTH_CODE }}
+        run: >
+          python3 -c "
+          import json,os;
+          cfg={'max_items':7,'to_email':os.environ['TO_EMAIL'],'smtp':{'server':'smtp.qq.com','port':465,'sender_email':os.environ['SENDER_EMAIL'],'auth_code':os.environ['AUTH_CODE']}};
+          json.dump(cfg, open('法学学习/daily-news/config.json','w',encoding='utf-8'), ensure_ascii=False, indent=4)
+          "
+
+      - name: 运行新闻简报
+        run: |
+          cd 法学学习/daily-news
+          python daily_news.py
