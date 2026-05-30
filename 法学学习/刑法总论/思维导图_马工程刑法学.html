@@ -30,8 +30,8 @@
     transition: all 0.15s;
   }
   .search-bar button:hover { background: #e94560; color: #fff; }
-  .match-highlight { fill: #ffe066 !important; stroke: #e94560 !important; stroke-width: 2px !important; }
-  .match-current { fill: #e94560 !important; stroke: #c0392b !important; stroke-width: 3px !important; color: #fff !important; }
+  .markmap-node.match-highlight > foreignObject > div { background: #ffe066 !important; outline: 2px solid #e94560 !important; border-radius: 3px !important; }
+  .markmap-node.match-current > foreignObject > div { background: #e94560 !important; color: #fff !important; outline: 3px solid #c0392b !important; border-radius: 3px !important; }
   .toolbar {
     position: fixed; top: 16px; right: 16px; z-index: 100;
     display: flex; flex-direction: column; gap: 8px;
@@ -1021,7 +1021,25 @@ function gotoMatch(idx) {
   matches.forEach(n => n.classList.remove('match-current'));
   const node = matches[matchIdx];
   node.classList.add('match-current');
-  node.classList.remove('match-highlight');
+  const svgEl = document.querySelector('#mindmap svg');
+  if (svgEl) {
+    let gEl = svgEl.querySelector(':scope > g');
+    if (!gEl) gEl = svgEl.firstElementChild;
+    if (gEl && gEl.tagName === 'g') {
+      try {
+        const bbox = node.getBBox();
+        const svgW = svgEl.clientWidth || window.innerWidth;
+        const svgH = svgEl.clientHeight || window.innerHeight;
+        const t = d3.zoomTransform(gEl);
+        const k = t.k;
+        const tx = svgW / 2 - (bbox.x + bbox.width / 2) * k;
+        const ty = svgH / 2 - (bbox.y + bbox.height / 2) * k;
+        d3.select(gEl).transition().duration(400).attr('transform', `translate(${tx}, ${ty}) scale(${k})`);
+        gEl.__zoom = d3.zoomIdentity.translate(tx, ty).scale(k);
+        return;
+      } catch(e) {}
+    }
+  }
   node.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
 }
 
