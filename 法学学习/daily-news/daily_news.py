@@ -42,7 +42,7 @@ def load_config() -> dict:
 
     # GitHub Actions 模式：从环境变量读取
     return {
-        "max_items": int(os.environ.get("MAX_ITEMS", "7")),
+        "max_items": int(os.environ.get("MAX_ITEMS", "20")),
         "send_key": os.environ.get("SEND_KEY", ""),
     }
 
@@ -169,14 +169,47 @@ def fetch_all_news() -> List[dict]:
 # ============================================================
 
 KEYWORDS = {
-    "国内": ["习近平", "国务院", "人大", "法律", "法治", "司法",
-             "经济", "GDP", "房地产", "股市", "就业",
-             "台湾", "香港", "南海", "科技",
-             "最高人民法院", "民法典", "刑法"],
-    "国际": ["联合国", "美国", "欧盟", "俄罗斯", "日本", "韩国",
-             "战争", "冲突", "制裁", "贸易", "气候", "AI", "人工智能",
-             "选举", "峰会", "协议"],
+    "国内": [
+        # 核心人物与机构
+        "习近平", "李强", "国务院", "人大", "政协", "中央",
+        # 法律
+        "法律", "法治", "司法", "最高人民法院", "最高人民检察院",
+        "民法典", "刑法", "宪法", "修法", "立法",
+        # 经济
+        "经济", "GDP", "增长", "房地产", "楼市", "股市", "A股",
+        "就业", "失业", "消费", "降息", "降准", "通胀",
+        # 两岸与外交
+        "台湾", "香港", "澳门", "南海", "钓鱼岛", "中俄", "中美",
+        # 科技
+        "科技", "芯片", "AI", "人工智能", "华为", "5G", "航天",
+        # 民生
+        "高考", "养老金", "医保", "房价", "食品安全",
+        # 军事
+        "军事", "国防", "解放军",
+    ],
+    "国际": [
+        # 大国
+        "美国", "特朗普", "拜登", "白宫", "国会",
+        "俄罗斯", "普京", "乌克兰", "北约",
+        "欧盟", "中国", "日本", "韩国", "朝鲜", "印度",
+        # 冲突与安全
+        "战争", "冲突", "停火", "制裁", "核", "导弹",
+        # 经济
+        "贸易", "关税", "美联储", "加息", "降息", "通胀",
+        "全球经济", "供应链", "石油",
+        # 科技
+        "AI", "人工智能", "芯片", "SpaceX", "太空",
+        # 国际组织
+        "联合国", "WHO", "WTO", "G7", "G20",
+        # 气候与环境
+        "气候", "减排", "碳",
+        # 重大事件
+        "选举", "峰会", "协议", "谈判", "警告",
+    ],
 }
+
+# 最低分数线：低于此分的新闻不入选
+MIN_SCORE = 2
 
 
 def score_news(item: dict) -> int:
@@ -191,12 +224,30 @@ def score_news(item: dict) -> int:
     return score
 
 
-def select_top_news(items: List[dict], total: int = 7) -> List[dict]:
-    domestic = sorted([i for i in items if i["category"] == "国内"], key=score_news, reverse=True)
-    international = sorted([i for i in items if i["category"] == "国际"], key=score_news, reverse=True)
+def select_top_news(items: List[dict], total: int = 20) -> List[dict]:
+    """
+    筛选最重要新闻，国内国际各约一半。
+    只选有质量的（分数 ≥ MIN_SCORE），宁缺毋滥。
+    """
+    domestic = sorted(
+        [i for i in items if i["category"] == "国内" and score_news(i) >= MIN_SCORE],
+        key=score_news, reverse=True,
+    )
+    international = sorted(
+        [i for i in items if i["category"] == "国际" and score_news(i) >= MIN_SCORE],
+        key=score_news, reverse=True,
+    )
 
-    dom_n = min(len(domestic), max(3, total - 3))
-    intl_n = min(len(international), total - dom_n)
+    # 目标各 10 条，但根据实际情况灵活调整
+    half = total // 2
+    dom_n = min(len(domestic), half)
+    intl_n = min(len(international), half)
+
+    # 如果一方不够，另一方补上
+    if dom_n < half:
+        intl_n = min(len(international), total - dom_n)
+    if intl_n < half:
+        dom_n = min(len(domestic), total - intl_n)
 
     selected = domestic[:dom_n] + international[:intl_n]
     selected.sort(key=score_news, reverse=True)
