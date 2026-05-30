@@ -639,7 +639,7 @@ function render() {
     autoFit: false,
     colorFreezeLevel: 3,
     duration: 300,
-    maxWidth: 450,
+    maxWidth: 600,
     initialExpandLevel: 3,
     pan: true,
     zoom: true,
@@ -647,10 +647,27 @@ function render() {
     spacingHorizontal: 100,
     spacingVertical: 10,
   }, root);
-  setTimeout(() => mm.fit(), 300);
+  setTimeout(() => { mm.fit(); fixNodeSizes(); }, 400);
 }
 
 render();
+
+// ====== 修复节点宽度：markmap 计算中文不准，JS 兜底 ======
+function fixNodeSizes() {
+  const svg = document.querySelector('#mindmap svg');
+  if (!svg) return;
+  svg.querySelectorAll('.markmap-node').forEach(node => {
+    const fo = node.querySelector(':scope > foreignObject');
+    if (!fo) return;
+    const depth = parseInt(node.getAttribute('data-depth') || '0');
+    const widths = [600, 520, 460, 400, 350, 300, 260];
+    const w = widths[Math.min(depth, widths.length - 1)];
+    fo.setAttribute('width', w);
+    // 更新内部 div 最大宽度
+    const div = fo.querySelector(':scope > div');
+    if (div) { div.style.maxWidth = (w - 20) + 'px'; }
+  });
+}
 
 function fit() { mm.fit(); }
 
@@ -662,6 +679,7 @@ function expandAll() {
   }
   expand(expanded);
   mm.setData(expanded);
+  setTimeout(fixNodeSizes, 400);
 }
 
 function collapseAll() {
@@ -675,7 +693,15 @@ function collapseAll() {
   }
   collapse(collapsed);
   mm.setData(collapsed);
+  setTimeout(fixNodeSizes, 400);
 }
+
+// 点击展开/折叠节点后也修复
+document.addEventListener('click', e => {
+  if (e.target.closest('.markmap-node circle') || e.target.closest('.markmap-node')) {
+    setTimeout(fixNodeSizes, 500);
+  }
+});
 
 function getAllTextNodes() {
   const svg = document.querySelector('#mindmap svg');
