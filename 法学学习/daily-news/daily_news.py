@@ -39,12 +39,22 @@ def log(msg: str):
 # 配置
 # ============================================================
 def load_config() -> dict:
-    if not os.path.exists(CONFIG_FILE):
-        log(f"❌ 找不到配置文件 {CONFIG_FILE}")
-        log("请先创建 config.json（参考下方说明）")
-        sys.exit(1)
-    with open(CONFIG_FILE, "r", encoding="utf-8") as f:
-        return json.load(f)
+    """加载配置：优先 config.json，否则从环境变量读取"""
+    if os.path.exists(CONFIG_FILE):
+        with open(CONFIG_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+
+    # GitHub Actions 模式：从环境变量读取
+    return {
+        "max_items": int(os.environ.get("MAX_ITEMS", "7")),
+        "to_email": os.environ.get("TO_EMAIL", ""),
+        "smtp": {
+            "server": os.environ.get("SMTP_SERVER", "smtp.qq.com"),
+            "port": int(os.environ.get("SMTP_PORT", "465")),
+            "sender_email": os.environ.get("SENDER_EMAIL", ""),
+            "auth_code": os.environ.get("AUTH_CODE", ""),
+        },
+    }
 
 
 # ============================================================
