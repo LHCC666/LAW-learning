@@ -50,6 +50,26 @@
   .toolbar button:hover, .toolbar a:hover {
     background: #e94560; color: #fff; transform: scale(1.1);
   }
+  /* 层级字体区分 */
+  .markmap-node[data-depth="0"] > foreignObject > div {
+    font-size: 22px !important; font-weight: 900 !important; color: #1a1a2e !important;
+  }
+  .markmap-node[data-depth="1"] > foreignObject > div {
+    font-size: 17px !important; font-weight: 700 !important; color: #c0392b !important;
+  }
+  .markmap-node[data-depth="2"] > foreignObject > div {
+    font-size: 14px !important; font-weight: 600 !important; color: #2c3e50 !important;
+  }
+  .markmap-node[data-depth="3"] > foreignObject > div {
+    font-size: 12.5px !important; font-weight: 400 !important; color: #444 !important;
+  }
+  .markmap-node[data-depth="4"] > foreignObject > div {
+    font-size: 11px !important; font-weight: 300 !important; color: #666 !important;
+  }
+  .markmap-node[data-depth="5"] > foreignObject > div,
+  .markmap-node[data-depth="6"] > foreignObject > div {
+    font-size: 10px !important; font-weight: 300 !important; color: #888 !important;
+  }
 </style>
 </head>
 <body>
