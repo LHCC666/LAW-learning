@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法学学习 · 资料导航</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    color: #eee;
+    font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .container {
+    max-width: 600px;
+    width: 90%;
+    padding: 32px 20px;
+  }
+  h1 {
+    text-align: center;
+    font-size: 1.8em;
+    margin-bottom: 4px;
+    background: linear-gradient(135deg, #f5af19, #f12711);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .subtitle {
+    text-align: center;
+    color: #888;
+    margin-bottom: 32px;
+    font-size: 0.85em;
+  }
+  .card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-decoration: none;
+    color: #ccc;
+  }
+  .card:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    color: #fff;
+  }
+  .card .icon {
+    font-size: 2em;
+    flex-shrink: 0;
+  }
+  .card .info h3 {
+    font-size: 1.05em;
+    margin-bottom: 2px;
+  }
+  .card .info span {
+    font-size: 0.8em;
+    color: #888;
+  }
+  .card .arrow {
+    margin-left: auto;
+    font-size: 1.2em;
+    color: #555;
+  }
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.7em;
+    margin-left: 6px;
+  }
+  .badge-new { background: #e94560; color: #fff; }
+  .badge-soon { background: #f0a500; color: #000; }
+  .footer {
+    text-align: center;
+    color: #555;
+    font-size: 0.75em;
+    margin-top: 24px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>📚 法学学习</h1>
+  <p class="subtitle">期末复习资料导航 · 收藏此页随时查看</p>
+
+  <!-- 思维导图 -->
+  <a href="民法总论/" class="card">
+    <span class="icon">🏛️</span>
+    <div class="info">
+      <h3>民法总论 <span class="badge badge-new">已上线</span></h3>
+      <span>王利明 第三版 · 思维导图 + 更多资料</span>
+    </div>
+    <span class="arrow">→</span>
+  </a>
+
+  <a href="刑法总论/" class="card">
+    <span class="icon">⚖️</span>
+    <div class="info">
+      <h3>刑法总论 · 思维导图 <span class="badge badge-new">已上线</span></h3>
+      <span>马工程 第二版 · 绪论+15章 · 按教材目录逐章节编排</span>
+    </div>
+    <span class="arrow">→</span>
+  </a>
+
+  <a href="法律逻辑学/" class="card">
+    <span class="icon">🧠</span>
+    <div class="info">
+      <h3>法律逻辑学 · 思维导图 <span class="badge badge-new">已上线</span></h3>
+      <span>雍琦 增订版 · 12章 · 逻辑基础 + 法学应用</span>
+    </div>
+    <span class="arrow">→</span>
+  </a>
+
+  <!-- 复习计划 -->
+  <a href="期末复习计划.md" class="card">
+    <span class="icon">📋</span>
+    <div class="info">
+      <h3>期末复习计划 <span class="badge badge-new">已上线</span></h3>
+      <span>4周计划 · 每日任务清单 · 里程碑追踪</span>
+    </div>
+    <span class="arrow">→</span>
+  </a>
+
+  <p class="footer">🔖 建议收藏此页：<br/>lhcc666.github.io/first-try-/法学学习/</p>
+</div>
+
+</body>
+</html>

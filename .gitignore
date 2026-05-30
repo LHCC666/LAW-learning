@@ -2,6 +2,9 @@
 *.pdf
 *.epub
 
+# 独立仓库（不在本仓库管理范围内）
+Daily/
+
 # 系统文件
 .DS_Store
 Thumbs.db
