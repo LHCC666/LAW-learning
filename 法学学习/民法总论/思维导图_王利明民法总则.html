@@ -8,88 +8,36 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: #f5f0eb; }
   #mindmap { width: 100vw; height: 100vh; }
-  .search-bar {
-    position: fixed; top: 16px; left: 16px; z-index: 100;
-    display: flex; gap: 6px; align-items: center;
-  }
-  .search-bar input {
-    width: 240px; height: 42px; padding: 0 14px;
-    border: 1.5px solid #ddd; border-radius: 21px;
-    font-size: 0.9em; font-family: inherit;
-    outline: none; background: #fff;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    transition: all 0.2s;
-  }
+  .search-bar { position: fixed; top: 16px; left: 16px; z-index: 100; display: flex; gap: 6px; align-items: center; }
+  .search-bar input { width: 240px; height: 42px; padding: 0 14px; border: 1.5px solid #ddd; border-radius: 21px; font-size: 0.9em; outline: none; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
   .search-bar input:focus { border-color: #c0392b; width: 300px; }
-  .search-bar input::placeholder { color: #bbb; }
-  .search-info { font-size: 0.75em; color: #999; min-width: 50px; }
-  .search-bar button {
-    width: 36px; height: 36px; border-radius: 50%;
-    border: none; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    cursor: pointer; font-size: 1em; color: #555;
-    transition: all 0.15s;
-  }
+  .search-bar button { width: 36px; height: 36px; border-radius: 50%; border: none; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer; font-size: 1em; color: #555; }
   .search-bar button:hover { background: #c0392b; color: #fff; }
-  .markmap-node.match-highlight > foreignObject > div { background: #ffe066 !important; outline: 2px solid #c0392b !important; border-radius: 3px !important; }
-  .markmap-node.match-current > foreignObject > div { background: #c0392b !important; color: #fff !important; outline: 3px solid #8b0000 !important; border-radius: 3px !important; }
-  .toolbar {
-    position: fixed; top: 16px; right: 16px; z-index: 100;
-    display: flex; flex-direction: column; gap: 8px;
-  }
-  .toolbar button, .toolbar a {
-    width: 44px; height: 44px; border-radius: 50%;
-    border: none; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    cursor: pointer; font-size: 1.2em; display: flex; align-items: center;
-    justify-content: center; text-decoration: none; color: #333;
-    transition: all 0.2s;
-  }
-  .toolbar button:hover, .toolbar a:hover {
-    background: #c0392b; color: #fff; transform: scale(1.1);
-  }
-  .markmap-node foreignObject > div {
-    word-break: keep-all !important; white-space: normal !important;
-    padding: 2px 6px !important; line-height: 1.4 !important;
-  }
-  .markmap-node[data-depth="0"] > foreignObject > div { font-size: 22px !important; font-weight: 900 !important; color: #1a1a2e !important; line-height: 1.15 !important; padding-top: 0 !important; margin-top: -2px !important; }
-  .markmap-node[data-depth="1"] > foreignObject { overflow: visible !important; }
-  .markmap-node[data-depth="1"] > foreignObject > div { font-size: 16px !important; font-weight: 700 !important; color: #8b0000 !important; white-space: nowrap !important; line-height: 1.15 !important; padding-top: 0 !important; }
-  .markmap-node[data-depth="2"] > foreignObject > div { font-size: 14px !important; font-weight: 600 !important; color: #2c3e50 !important; }
-  .markmap-node[data-depth="3"] > foreignObject > div { font-size: 12.5px !important; font-weight: 400 !important; color: #444 !important; }
-  .markmap-node[data-depth="4"] > foreignObject > div { font-size: 11px !important; font-weight: 300 !important; color: #666 !important; }
-  .markmap-node[data-depth="5"] > foreignObject > div,
-  .markmap-node[data-depth="6"] > foreignObject > div { font-size: 10px !important; font-weight: 300 !important; color: #888 !important; }
-  .version-badge {
-    position: fixed; bottom: 16px; right: 16px; z-index: 100;
-    background: rgba(192,57,43,0.9); color: #fff; padding: 4px 12px;
-    border-radius: 12px; font-size: 0.75em; font-weight: 600;
-  }
+  .toolbar { position: fixed; top: 16px; right: 16px; z-index: 100; display: flex; flex-direction: column; gap: 8px; }
+  .toolbar button { width: 44px; height: 44px; border-radius: 50%; border: none; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.15); cursor: pointer; font-size: 1.2em; transition: all 0.2s; }
+  .toolbar button:hover { background: #c0392b; color: #fff; transform: scale(1.1); }
+  .version-badge { position: fixed; bottom: 16px; right: 16px; z-index: 100; background: rgba(192,57,43,0.9); color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 0.75em; font-weight: 600; }
 </style>
 </head>
 <body>
-
 <svg id="mindmap"></svg>
-
 <div class="search-bar">
   <input id="searchInput" type="text" placeholder="搜索知识点...（回车跳转）" oninput="doSearch()" onkeydown="handleSearchKey(event)">
   <button onclick="prevMatch()" title="上一个">▲</button>
   <button onclick="nextMatch()" title="下一个">▼</button>
-  <span class="search-info" id="searchInfo"></span>
+  <span id="searchInfo" style="font-size:0.75em;color:#999"></span>
 </div>
-
 <div class="toolbar">
   <button onclick="fit()" title="适应屏幕">🔍</button>
   <button onclick="expandAll()" title="全部展开">📂</button>
   <button onclick="collapseAll()" title="全部折叠">📁</button>
 </div>
-
 <div class="version-badge">王利明《民法总则》第三版 · 2022</div>
-
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 <script src="https://cdn.jsdelivr.net/npm/markmap-view@0.15.4/dist/browser/index.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/markmap-lib@0.15.4/dist/browser/index.js"></script>
-
-<script>
-const markdown = `# 🏛️ 王利明·民法总则（第三版）
+<script id="__md__" type="text/markdown">
+# 🏛️ 王利明·民法总则（第三版）
 ## 第一章 民法概述
 ### 第一节 民法的概念
 #### 形式民法 = 民法典（2021.1.1施行）
@@ -999,155 +947,61 @@ const markdown = `# 🏛️ 王利明·民法总则（第三版）
 ##### 最后一日为法定休假日的→顺延至结束后第一日
 #### 期间的表达
 ##### "以上""以下""以内"→含本数
-##### "不满""超过""以外"→不含本数`;
-
-const { Markmap } = window.markmap;
-const { Transformer } = window.markmap;
-
-const transformer = new Transformer();
-const { root } = transformer.transform(markdown);
-
-let mm;
-let matches = [];
-let matchIdx = -1;
-
-function render() {
-  mm = Markmap.create('#mindmap', {
-    autoFit: false,
-    colorFreezeLevel: 3,
-    duration: 300,
-    maxWidth: 460,
-    initialExpandLevel: 3,
-    pan: true,
-    zoom: true,
-    fitRatio: 0.95,
-    spacingHorizontal: 90,
-    spacingVertical: 10,
-  }, root);
-  setTimeout(() => mm.fit(), 300);
-}
-
-setTimeout(() => {
+##### "不满""超过""以外"→不含本数
+</script>
+<script>
+var mm, matches = [], matchIdx = -1, root;
+setTimeout(function() {
   try {
-    render();
+    var md = document.getElementById("__md__").textContent;
+    var t = new window.markmap.Transformer();
+    root = t.transform(md).root;
+    mm = window.markmap.Markmap.create("#mindmap", { autoFit: false, duration: 300, maxWidth: 460, initialExpandLevel: 3, pan: true, zoom: true, fitRatio: 0.95, spacingHorizontal: 90, spacingVertical: 10 }, root);
+    setTimeout(function() { mm.fit(); }, 300);
   } catch(e) {
-    document.body.innerHTML += '<div style="position:fixed;bottom:10px;left:10px;background:red;color:#fff;padding:8px 16px;border-radius:8px;z-index:9999;font-size:14px"><b>渲染错误:</b> ' + e.message + '</div>';
+    document.body.innerHTML += "<div style="position:fixed;bottom:10px;left:10px;background:red;color:#fff;padding:10px;z-index:9999;border-radius:6px">ERROR: " + e.message + "</div>";
   }
-}, 300);
-
-function fit() { mm.fit(); }
-
+}, 500);
+function fit() { mm && mm.fit(); }
 function expandAll() {
-  const expanded = JSON.parse(JSON.stringify(root));
-  function expand(node) {
-    if (node.payload) delete node.payload.fold;
-    if (node.children) node.children.forEach(expand);
-  }
-  expand(expanded);
-  mm.setData(expanded);
+  if (!root) return;
+  var c = JSON.parse(JSON.stringify(root));
+  (function x(n) { if(n.payload) delete n.payload.fold; if(n.children) n.children.forEach(x); })(c);
+  mm.setData(c);
 }
-
 function collapseAll() {
-  const collapsed = JSON.parse(JSON.stringify(root));
-  function collapse(node) {
-    if (node.depth >= 2) {
-      node.payload = node.payload || {};
-      node.payload.fold = 1;
-    }
-    if (node.children) node.children.forEach(collapse);
-  }
-  collapse(collapsed);
-  mm.setData(collapsed);
+  if (!root) return;
+  var c = JSON.parse(JSON.stringify(root));
+  (function x(n) { if(n.depth >= 2) { n.payload = n.payload || {}; n.payload.fold = 1; } if(n.children) n.children.forEach(x); })(c);
+  mm.setData(c);
 }
-
-function getAllTextNodes() {
-  const svg = document.getElementById('mindmap');
-  if (!svg) return [];
-  return Array.from(svg.querySelectorAll('.markmap-node'));
-}
-
-function getNodeText(node) {
-  return (node.textContent || '').replace(/\s+/g, ' ').trim().toLowerCase();
-}
-
-function clearHighlights() {
-  matches.forEach(n => { n.classList.remove('match-highlight', 'match-current'); });
-  matches = []; matchIdx = -1;
-  document.getElementById('searchInfo').textContent = '';
-}
-
+function getNodes() { return Array.from(document.querySelectorAll(".markmap-node")); }
+function nodeText(n) { return (n.textContent || "").replace(/s+/g, " ").trim().toLowerCase(); }
+function clearSearch() { matches.forEach(function(n) { n.classList.remove("match-highlight", "match-current"); }); matches = []; matchIdx = -1; document.getElementById("searchInfo").textContent = ""; }
 function doSearch() {
-  clearHighlights();
-  const query = document.getElementById('searchInput').value.trim().toLowerCase();
-  if (!query || query.length < 1) return;
-  const nodes = getAllTextNodes();
-  matches = nodes.filter(n => getNodeText(n).includes(query));
-  if (matches.length === 0) { document.getElementById('searchInfo').textContent = '0/0'; return; }
-  matches.forEach(n => n.classList.add('match-highlight'));
-  matchIdx = 0;
-  gotoMatch(0);
+  clearSearch();
+  var q = document.getElementById("searchInput").value.trim().toLowerCase();
+  if (!q) return;
+  matches = getNodes().filter(function(n) { return nodeText(n).indexOf(q) >= 0; });
+  if (!matches.length) { document.getElementById("searchInfo").textContent = "0/0"; return; }
+  matches.forEach(function(n) { n.classList.add("match-highlight"); });
+  matchIdx = 0; gotoMatch(0);
 }
-
-function gotoMatch(idx) {
-  if (matches.length === 0) return;
-  matchIdx = ((idx % matches.length) + matches.length) % matches.length;
-  document.getElementById('searchInfo').textContent = \`\${matchIdx + 1}/\${matches.length}\`;
-  matches.forEach(n => n.classList.remove('match-current'));
-  const node = matches[matchIdx];
-  node.classList.add('match-current');
-  let p = node.parentElement;
-  while (p && p.id !== 'mindmap') {
-    p.style.display = '';
-    try { p.removeAttribute('display'); } catch(e) {}
-    p = p.parentElement;
-  }
-  const svgEl = document.getElementById('mindmap');
-  try {
-    const nodeRect = node.getBoundingClientRect();
-    const svgRect = svgEl.getBoundingClientRect();
-    if (nodeRect.width === 0 && nodeRect.height === 0) return;
-    const svgCX = svgRect.left + svgRect.width / 2;
-    const svgCY = svgRect.top + svgRect.height / 2;
-    const ncx = nodeRect.left + nodeRect.width / 2;
-    const ncy = nodeRect.top + nodeRect.height / 2;
-    const targetK = 2;
-    if (mm && mm.zoom) {
-      const t = d3.zoomTransform(svgEl);
-      const sx = (ncx - t.x) / t.k;
-      const sy = (ncy - t.y) / t.k;
-      const nt = d3.zoomIdentity.translate(svgCX - targetK * sx, svgCY - targetK * sy).scale(targetK);
-      d3.select(svgEl).transition().duration(500).call(mm.zoom.transform, nt);
-      return;
-    }
-  } catch(e) {
-    node.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
+function gotoMatch(i) {
+  if (!matches.length) return;
+  matchIdx = ((i % matches.length) + matches.length) % matches.length;
+  document.getElementById("searchInfo").textContent = (matchIdx + 1) + "/" + matches.length;
+  matches.forEach(function(n) { n.classList.remove("match-current"); });
+  var node = matches[matchIdx];
+  node.classList.add("match-current");
+  node.scrollIntoView({ behavior: "smooth", block: "center" });
 }
-
-function nextMatch() {
-  if (matches.length === 0) { doSearch(); return; }
-  matches[matchIdx]?.classList.add('match-highlight');
-  gotoMatch(matchIdx + 1);
-}
-
-function prevMatch() {
-  if (matches.length === 0) { doSearch(); return; }
-  matches[matchIdx]?.classList.add('match-highlight');
-  gotoMatch(matchIdx - 1);
-}
-
+function nextMatch() { if (!matches.length) doSearch(); else gotoMatch(matchIdx + 1); }
+function prevMatch() { if (!matches.length) doSearch(); else gotoMatch(matchIdx - 1); }
 function handleSearchKey(e) {
-  if (e.key === 'Enter') { e.preventDefault(); if (matches.length === 0) doSearch(); else nextMatch(); }
-  if (e.key === 'Escape') { document.getElementById('searchInput').value = ''; clearHighlights(); }
+  if (e.key === "Enter") { e.preventDefault(); nextMatch(); }
+  if (e.key === "Escape") { document.getElementById("searchInput").value = ""; clearSearch(); }
 }
-
-document.addEventListener('keydown', e => {
-  if (document.activeElement === document.getElementById('searchInput')) return;
-  if (e.key === 'f' || e.key === 'F') { e.preventDefault(); fit(); }
-  if (e.key === 'e' || e.key === 'E') { e.preventDefault(); expandAll(); }
-  if (e.key === 'c' || e.key === 'C') { e.preventDefault(); collapseAll(); }
-  if (e.key === '/' && !e.ctrlKey && !e.metaKey) { e.preventDefault(); document.getElementById('searchInput').focus(); }
-});
 </script>
 </body>
 </html>
