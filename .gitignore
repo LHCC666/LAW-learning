@@ -1,9 +1,15 @@
+# Server酱推送配置（含密钥，不提交）
+**/study-push-config.json
+
 # 大型教材文件（不提交到Git）
 *.pdf
 *.epub
 
 # 独立仓库（不在本仓库管理范围内）
 Daily/
+
+# Node.js（本地调试产生）
+node_modules/
 
 # 系统文件
 .DS_Store
