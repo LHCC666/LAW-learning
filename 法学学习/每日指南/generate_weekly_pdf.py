@@ -234,7 +234,7 @@ def parse_markdown_to_story(md_text):
                 bullet_items.append(item_text)
                 i += 1
             for item in bullet_items:
-                story.append(bni(f'• {item}'))
+                story.append(bni(f'· {item}'))  # middle dot 替代 bullet
             continue
 
         # Ordered list
@@ -264,8 +264,8 @@ def parse_inline(text):
     text = re.sub(r'\*(.+?)\*', r'<i>\1</i>', text)
     # Inline code: `text` -> <font face="KaiTi">text</font>
     text = re.sub(r'`([^`]+)`', r'<font face="KaiTi">\1</font>', text)
-    # Star emoji ⭐
-    text = text.replace('⭐', '<font color="#c0392b">⭐</font>')
+    # Star (use black star ★ instead of emoji ⭐, not in CJK fonts)
+    text = text.replace('⭐', '<font color="#c0392b">★</font>')
     # Arrow
     text = text.replace('→', ' → ')
     return text

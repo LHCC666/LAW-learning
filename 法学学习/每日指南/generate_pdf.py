@@ -151,7 +151,7 @@ def hr():
 def bullet(items, indent=1):
     """无序列表"""
     result = []
-    prefix = "　" * indent + "• "
+    prefix = "　" * indent + "· "  # middle dot 替代 bullet (bullet 在 simfang/simhei/simkai 中缺失)
     for item in items:
         result.append(Paragraph(f"{prefix}{item}", S['body_ni']))
     return result
@@ -292,7 +292,7 @@ def build_pdf(input_md: str, output_pdf: str):
     story.append(info_box(
         Paragraph(
             '<font color="#2c5282"><b>📌 本周核心：</b></font>'
-            '民法法律主体收尾 + 刑法犯罪论深化 + 逻辑演绎推理 ⭐',
+            '民法法律主体收尾 + 刑法犯罪论深化 + 逻辑演绎推理 ★',
             S['body_ni']
         ),
         bg_color=HexColor("#ebf4ff"),
@@ -603,8 +603,8 @@ def build_pdf(input_md: str, output_pdf: str):
     ))
     story.append(spacer(3))
 
-    # ── §4 因果关系 ⭐ ──
-    story.append(h2("§4 刑法上的因果关系 ⭐"))
+    # ── §4 因果关系 ★ ──
+    story.append(h2("§4 刑法上的因果关系 ★"))
 
     story.append(body("刑法上的因果关系，是指人的危害行为合乎规律地引起某种危害结果的内在联系。"))
     story.append(spacer(2))
@@ -711,7 +711,7 @@ def build_pdf(input_md: str, output_pdf: str):
     story.append(h3("三个词项"))
     sld_terms = [
         ["<b>大项 P</b>", "大前提的谓项 + 结论的谓项", "结论的谓项"],
-        ["<b>中项 M</b>", "大前提和小前提中都出现", "<b>连接大小前提的关键 ⭐</b>"],
+        ["<b>中项 M</b>", "大前提和小前提中都出现", "<b>连接大小前提的关键 ★</b>"],
         ["<b>小项 S</b>", "小前提的主项 + 结论的主项", "结论的主项"],
     ]
     story.append(make_table(
@@ -722,7 +722,7 @@ def build_pdf(input_md: str, output_pdf: str):
     story.append(spacer(3))
 
     # ── 三段论六条规则 ──
-    story.append(h3("三段论的六条关键规则 ⭐⭐"))
+    story.append(h3("三段论的六条关键规则 ★★"))
     rules = [
         ['<b>规则一</b>', '中项必须至少在一个前提中周延', '“有些M是P，有些S是M” → 中项M两次不周延 ❌'],
         ['<b>规则二</b>', '前提中不周延的词项在结论中不得周延', '前提中“S是P的种”→结论不能说“所有S是P”'],
@@ -741,7 +741,7 @@ def build_pdf(input_md: str, output_pdf: str):
     # ── 三段论的格和式 ──
     story.append(h3("三段论的格 — 由中项位置决定"))
     ge_data = [
-        ["<b>第一格</b>", "大前提主项、小前提谓项", "M—P, S—M → S—P", "<b>法律适用最常用 ⭐</b>"],
+        ["<b>第一格</b>", "大前提主项、小前提谓项", "M—P, S—M → S—P", "<b>法律适用最常用 ★</b>"],
         ["第二格", "两前提谓项", "P—M, S—M → S—P", "区别格"],
         ["第三格", "两前提主项", "M—P, M—S → S—P", "例证格"],
         ["第四格", "大前提谓项、小前提主项", "P—M, M—S → S—P", "很少用"],
@@ -846,7 +846,7 @@ def build_pdf(input_md: str, output_pdf: str):
     ))
     story.append(spacer(2))
     story.append(Paragraph(
-        '📋 质量自检：✔ 章节表格 ✔ 课本原文/法条标记 ✔ 对比表格 ✔ 口诀/记忆技巧 ✔ 具体产出任务 ✔ 跨科串联',
+        '📋 质量自检：√ 章节表格 √ 课本原文/法条标记 √ 对比表格 √ 口诀/记忆技巧 √ 具体产出任务 √ 跨科串联',
         S['small']
     ))
 
