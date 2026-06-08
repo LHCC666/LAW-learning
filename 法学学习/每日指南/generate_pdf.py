@@ -23,7 +23,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 # ── 注册中文字体（.ttf格式嵌入，安卓不改）─────────────────
 FONT_DIR = "C:/Windows/Fonts"
 
-pdfmetrics.registerFont(TTFont("SongTi", f"{FONT_DIR}/simsunb.ttf"))     # 正文宋体
+pdfmetrics.registerFont(TTFont("SongTi", f"{FONT_DIR}/simfang.ttf"))     # 正文仿宋（simsunb.ttf=ExtB缺常用字，改用仿宋）
 pdfmetrics.registerFont(TTFont("HeiTi", f"{FONT_DIR}/simhei.ttf"))       # 标题黑体
 pdfmetrics.registerFont(TTFont("KaiTi", f"{FONT_DIR}/simkai.ttf"))       # 引用楷体
 pdfmetrics.registerFont(TTFont("NotoSansSC", f"{FONT_DIR}/simhei.ttf"))  # 辅助用黑体

@@ -13,7 +13,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 
 # ── Fonts ──
 FONT_DIR = "C:/Windows/Fonts"
-pdfmetrics.registerFont(TTFont("SongTi", f"{FONT_DIR}/simsunb.ttf"))
+pdfmetrics.registerFont(TTFont("SongTi", f"{FONT_DIR}/simfang.ttf"))  # 仿宋（simsunb=ExtB缺常用字）
 pdfmetrics.registerFont(TTFont("HeiTi", f"{FONT_DIR}/simhei.ttf"))
 pdfmetrics.registerFont(TTFont("KaiTi", f"{FONT_DIR}/simkai.ttf"))
 pdfmetrics.registerFont(TTFont("NotoSansSC", f"{FONT_DIR}/simhei.ttf"))
