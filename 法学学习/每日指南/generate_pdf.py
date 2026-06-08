@@ -20,14 +20,13 @@ from reportlab.platypus.flowables import HRFlowable
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
-# ── 注册中文字体（全用.ttf嵌入，安卓不乱码）─────────────────
+# ── 注册中文字体（.ttf格式嵌入，安卓不改）─────────────────
 FONT_DIR = "C:/Windows/Fonts"
 
-# 用 Noto 开源字体替代 Windows 专有字体，保证跨平台可读
-pdfmetrics.registerFont(TTFont("SongTi", f"{FONT_DIR}/NotoSerifSC-VF.ttf"))       # 正文
-pdfmetrics.registerFont(TTFont("HeiTi", f"{FONT_DIR}/NotoSansSC-VF.ttf"))         # 标题
-pdfmetrics.registerFont(TTFont("KaiTi", f"{FONT_DIR}/simkai.ttf"))                 # 引用
-pdfmetrics.registerFont(TTFont("NotoSansSC", f"{FONT_DIR}/NotoSansSC-VF.ttf"))     # 辅助
+pdfmetrics.registerFont(TTFont("SongTi", f"{FONT_DIR}/simsunb.ttf"))     # 正文宋体
+pdfmetrics.registerFont(TTFont("HeiTi", f"{FONT_DIR}/simhei.ttf"))       # 标题黑体
+pdfmetrics.registerFont(TTFont("KaiTi", f"{FONT_DIR}/simkai.ttf"))       # 引用楷体
+pdfmetrics.registerFont(TTFont("NotoSansSC", f"{FONT_DIR}/simhei.ttf"))  # 辅助用黑体
 
 # ── 颜色方案 ─────────────────────────────────────────────────
 C_PRIMARY    = HexColor("#1a3a5c")   # 深蓝 — 主标题

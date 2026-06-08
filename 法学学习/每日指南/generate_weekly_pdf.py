@@ -13,10 +13,10 @@ from reportlab.pdfbase.ttfonts import TTFont
 
 # ── Fonts ──
 FONT_DIR = "C:/Windows/Fonts"
-pdfmetrics.registerFont(TTFont("SongTi", f"{FONT_DIR}/NotoSerifSC-VF.ttf"))
-pdfmetrics.registerFont(TTFont("HeiTi", f"{FONT_DIR}/NotoSansSC-VF.ttf"))
+pdfmetrics.registerFont(TTFont("SongTi", f"{FONT_DIR}/simsunb.ttf"))
+pdfmetrics.registerFont(TTFont("HeiTi", f"{FONT_DIR}/simhei.ttf"))
 pdfmetrics.registerFont(TTFont("KaiTi", f"{FONT_DIR}/simkai.ttf"))
-pdfmetrics.registerFont(TTFont("NotoSansSC", f"{FONT_DIR}/NotoSansSC-VF.ttf"))
+pdfmetrics.registerFont(TTFont("NotoSansSC", f"{FONT_DIR}/simhei.ttf"))
 
 # ── Colors ──
 C_PRIMARY   = HexColor("#1a3a5c")
