@@ -108,6 +108,18 @@ S['body_ni'] = ParagraphStyle('body_ni',
     textColor=C_BODY, alignment=TA_JUSTIFY,
     spaceBefore=0.3*mm, spaceAfter=0.3*mm,
     leftIndent=8*mm)
+# 编号段落（第一，/第二，/一是/二是 等）
+S['enum1'] = ParagraphStyle('enum1',
+    fontName='FangSong', fontSize=11, leading=22,
+    textColor=C_BODY, alignment=TA_JUSTIFY,
+    spaceBefore=2*mm, spaceAfter=1*mm,
+    leftIndent=4*mm, firstLineIndent=0)
+# 次级编号段落（1./2./①等）
+S['enum2'] = ParagraphStyle('enum2',
+    fontName='FangSong', fontSize=10.5, leading=21,
+    textColor=C_BODY, alignment=TA_JUSTIFY,
+    spaceBefore=0.8*mm, spaceAfter=0.8*mm,
+    leftIndent=12*mm, firstLineIndent=0)
 
 # ── 引用 ──
 S['quote'] = ParagraphStyle('quote',
@@ -134,6 +146,8 @@ def h2(text):    return Paragraph(text, S['h2'])
 def h3(text):    return Paragraph(text, S['h3'])
 def body(text):  return Paragraph(text, S['body'])
 def bni(text):   return Paragraph(text, S['body_ni'])
+def enum1(text): return Paragraph(text, S['enum1'])
+def enum2(text): return Paragraph(text, S['enum2'])
 def hr(w="40%"):
     return HRFlowable(width=w, thickness=0.5, color=C_BORDER,
                        spaceBefore=2*mm, spaceAfter=2*mm, hAlign='LEFT')
@@ -246,11 +260,46 @@ def extract_toc(md_text):
 #  Markdown → PDF 元素
 # ══════════════════════════════════════════════════════════════
 def parse_inline(text):
+    """内联格式"""
     text = re.sub(r'\*\*(.+?)\*\*', r'<b>\1</b>', text)
     text = re.sub(r'\*(.+?)\*', r'<i>\1</i>', text)
     text = text.replace('⭐', '<font color="#9b2c2c">★</font>')
     text = text.replace('→', ' → ')
     return text
+
+
+# ── 中式序号正则 ──
+_RE_ENUM1 = re.compile(r'^(第[一二三四五六七八九十百]+[，、])')  # 第一，第二，...
+_RE_ENUM2 = re.compile(
+    r'^((?:[一二三四五六七八九十]+(?:是|、|，|．|\.)\s*)'
+    r'|(?:其[一二三四五六七八九十]+[，、])'
+    r'|(?:[一两]方面[，、]))')  # 一是/二是/其一，/一方面，
+_RE_NUM = re.compile(r'^(\d+[\.\、\)）]\s*)')  # 1. 2. 等
+
+
+def format_paragraph(text):
+    """检测中式序号并返回 (style_key, formatted_text)"""
+    s = text.strip()
+
+    m = _RE_ENUM1.match(s)
+    if m:
+        prefix = m.group(1)
+        rest = s[m.end():]
+        return ('enum1', f'<b>{prefix}</b>{rest}')
+
+    m = _RE_ENUM2.match(s)
+    if m:
+        prefix = m.group(1)
+        rest = s[m.end():]
+        return ('enum2', f'<b>{prefix}</b>{rest}')
+
+    m = _RE_NUM.match(s)
+    if m:
+        prefix = m.group(1)
+        rest = s[m.end():]
+        return ('enum2', f'<b>{prefix}</b>{rest}')
+
+    return ('body', s)
 
 
 def parse_markdown_to_story(md_text):
@@ -353,8 +402,15 @@ def parse_markdown_to_story(md_text):
                 story.append(bni(f'{j}. {item}'))
             continue
 
-        # 普通段落
-        story.append(body(parse_inline(stripped)))
+        # 普通段落 —— 智能序号检测
+        style_key, formatted = format_paragraph(stripped)
+        formatted = parse_inline(formatted)
+        if style_key == 'enum1':
+            story.append(enum1(formatted))
+        elif style_key == 'enum2':
+            story.append(enum2(formatted))
+        else:
+            story.append(body(formatted))
         i += 1
 
     return story
