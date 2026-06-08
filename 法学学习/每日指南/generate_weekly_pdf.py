@@ -39,11 +39,13 @@ S['title'] = ParagraphStyle('WT', fontName='HeiTi', fontSize=20, leading=30,
                              textColor=C_PRIMARY, alignment=TA_CENTER, spaceAfter=4*mm)
 S['subtitle'] = ParagraphStyle('WS', fontName='NotoSansSC', fontSize=9, leading=14,
                                 textColor=C_GRAY, alignment=TA_CENTER, spaceAfter=6*mm)
-S['h1'] = ParagraphStyle('WH1', fontName='HeiTi', fontSize=14, leading=20,
+S['chapter'] = ParagraphStyle('WCH', fontName='HeiTi', fontSize=18, leading=28,
+                               textColor=C_PRIMARY, spaceBefore=8*mm, spaceAfter=4*mm)
+S['h1'] = ParagraphStyle('WH1', fontName='HeiTi', fontSize=15, leading=22,
                           textColor=C_PRIMARY, spaceBefore=6*mm, spaceAfter=3*mm)
-S['h2'] = ParagraphStyle('WH2', fontName='HeiTi', fontSize=12, leading=18,
+S['h2'] = ParagraphStyle('WH2', fontName='HeiTi', fontSize=13, leading=19,
                           textColor=C_SECONDARY, spaceBefore=4*mm, spaceAfter=2*mm)
-S['h3'] = ParagraphStyle('WH3', fontName='KaiTi', fontSize=11, leading=16,
+S['h3'] = ParagraphStyle('WH3', fontName='KaiTi', fontSize=11.5, leading=17,
                           textColor=C_SECONDARY, spaceBefore=3*mm, spaceAfter=1.5*mm)
 S['body'] = ParagraphStyle('WB', fontName='SongTi', fontSize=10, leading=17,
                             textColor=C_BODY, alignment=TA_JUSTIFY, spaceAfter=1.5*mm,
@@ -59,6 +61,7 @@ S['cover_title'] = ParagraphStyle('WCT', fontName='HeiTi', fontSize=26, leading=
                                    textColor=C_PRIMARY, alignment=TA_CENTER, spaceAfter=8*mm)
 
 # ── Helpers ──
+def chapter(text): return Paragraph(text, S['chapter'])
 def h1(text): return Paragraph(text, S['h1'])
 def h2(text): return Paragraph(text, S['h2'])
 def h3(text): return Paragraph(text, S['h3'])
@@ -170,6 +173,13 @@ def parse_markdown_to_story(md_text):
                 quote_lines.append(qt_text)
                 i += 1
             story.append(qt('<br/>'.join(quote_lines)))
+            continue
+
+        # Chapter title (#)
+        if stripped.startswith('# ') and not stripped.startswith('## '):
+            text = parse_inline(stripped[2:])
+            story.append(chapter(text))
+            i += 1
             continue
 
         # Header level 1 (##)
